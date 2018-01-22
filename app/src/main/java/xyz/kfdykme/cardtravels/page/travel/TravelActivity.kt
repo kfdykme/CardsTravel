@@ -38,9 +38,7 @@ class TravelActivity : AppCompatActivity() {
             override fun onItemClick(position: Int) {
                 val s :String =adapter.items.get(position)
                 tItems.add(tAdapter.items.size,s)
-//                adapter.items.remove(s)
-//
-//                adapter.notifyItemRemoved(position)
+
                 tAdapter.notifyItemInserted(tAdapter.items.size)
 
                 rvTravle.smoothScrollToPosition(tAdapter.items.size)

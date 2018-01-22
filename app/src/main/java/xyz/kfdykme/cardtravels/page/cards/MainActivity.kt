@@ -17,27 +17,32 @@ import xyz.kfdykme.cardtravels.page.travel.TravelActivity
 
 class MainActivity : AppCompatActivity() {
 
-    val context = this;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        //test data
         val items = ArrayList<String>(listOf("ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","GuangZhou") )
 
+        //init recyclerview
         rv.adapter = CardsAdapter(this,items,0)
         rv.layoutManager = GridLayoutManager(this,2)
+
+
+        //init bottom navigation(contains two buttons)
         btTravel.setOnClickListener(object : View.OnClickListener{
             override fun onClick(view: View?) {
                 val intent = Intent()
-                intent.setClass(context,TravelActivity::class.java)
+                intent.setClass(this@MainActivity,TravelActivity::class.java)
                 startActivity(intent)
             }
         })
         btCard.setOnClickListener(object:View.OnClickListener{
             override fun onClick(p0: View?) {
 
-                startActivity(Intent(context,CardEditActivity::class.java))
+                startActivity(Intent(this@MainActivity,CardEditActivity::class.java))
             }
         })
     }

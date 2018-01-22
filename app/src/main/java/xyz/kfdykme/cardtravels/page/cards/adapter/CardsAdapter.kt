@@ -19,6 +19,9 @@ import xyz.kfdykme.cardtravels.R
  */
 class CardsAdapter(val context : Context, val items : ArrayList<String>,val type :Int) : RecyclerView.Adapter<CardsAdapter.CardsViewHolder>(){
 
+
+
+    //rewrite onclicklistener
     interface OnItemClickListener{
         fun onItemClick(position: Int)
     }
@@ -30,6 +33,8 @@ class CardsAdapter(val context : Context, val items : ArrayList<String>,val type
     }
 
     override fun onBindViewHolder(holder: CardsViewHolder?, position: Int) {
+
+
        holder?.bind(items.get(position),type)
 
        holder?.itemView?.cardv?.setOnClickListener(object : View.OnClickListener{
