@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.view_card_detail.view.*
 import xyz.kfdykme.cardtravels.R
-import xyz.kfdykme.cardtravels.page.cardedit.ToolAdapter
+import xyz.kfdykme.cardtravels.card.ToolAdapter
 
 /**
  * Created by kf on 18-1-21.
@@ -48,7 +48,7 @@ class CardDetaiAdapter(val context: Context,var items : ArrayList<String>,val ty
 
 
             var tools:ArrayList<String> = ArrayList<String>(listOf("Target","Eat","Play"))
-            var adapter = ToolAdapter(itemView!!.context,tools,1)
+            var adapter = ToolAdapter(itemView!!.context, tools, 1)
             itemView.rvCardDetail.adapter = adapter
             itemView.rvCardDetail.layoutManager = LinearLayoutManager(itemView!!.context)
 

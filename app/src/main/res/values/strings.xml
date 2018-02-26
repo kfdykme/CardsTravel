@@ -3,4 +3,8 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_travel">TravelActivity</string>
     <string name="title_activity_card_edit">CardEditActivity</string>
+    <string name="Target">目的地:</string>
+    <string name="Eating">吃什么:</string>
+    <string name="newItem">新一项</string>
+    <string name="askSaveCardEdit">要保存吗</string>
 </resources>

@@ -1,15 +1,22 @@
-package xyz.kfdykme.cardtravels.page.cardedit
+package xyz.kfdykme.cardtravels.card
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.gson.Gson
+import io.realm.Realm
 import xyz.kfdykme.cardtravels.R
 
 import kotlinx.android.synthetic.main.view_tool_basic.view.*
-import kotlinx.android.synthetic.main.view_tool_basic_detail.view.*
+import xyz.kfdykme.cardtravels.card.holder.EatHolder
+import xyz.kfdykme.cardtravels.card.holder.TargetHolder
+import xyz.kfdykme.cardtravels.data.BaseCardItem
+import xyz.kfdykme.cardtravels.data.Card
 
 /**
  * Created by kf on 18-1-21.
@@ -25,6 +32,8 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
 
     val TOOL_PLAY:Int = 3
 
+    var holders:MutableList<ToolBaseViewHolder> = mutableListOf()
+
     interface OnItemClickListener{
         fun onClick(view: View?)
         fun onTouch(view:View?, motionEvent: MotionEvent?):Boolean
@@ -33,7 +42,7 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
 
     var mOnClickListener : OnItemClickListener? =null
 
-    fun setOnItemClickListener(l:OnItemClickListener){
+    fun setOnItemClickListener(l: OnItemClickListener){
         mOnClickListener =l
     }
 
@@ -61,7 +70,23 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
 
 
 
-            1 -> (holder as ToolBasicDetailViewHolder)?.bind(items.get(position))
+            1 ->{
+                when(getItemViewType(position)){
+                    0 -> {
+                        (holder as TargetHolder).itemView.setOnClickListener(object :View.OnClickListener{
+                            override fun onClick(p0: View?) {
+
+                                Toast.makeText(context,(holder as TargetHolder).item.target,Toast.LENGTH_LONG).show()
+                            }
+                        })
+                    }
+                    1 ->{
+
+                    }
+                    else -> (holder as ToolBasicDetailViewHolder)?.bind(items.get(position))
+                }
+
+            }
         }
     }
 
@@ -70,6 +95,7 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ToolBaseViewHolder? {
+
 
 
 
@@ -90,16 +116,16 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
             when(viewType){
                 0 ->{
                     view = inflater.inflate(R.layout.view_tool_basic_detail,parent,false)
-                    return ToolBasicDetailViewHolder(view)
-                }
+                    var holder =TargetHolder(view)
+                    holders.add(holder)
+                    return holder
+            }
                 1 ->{
                     view = inflater.inflate(R.layout.view_tool_eat_detail,parent,false)
-                    return ToolBasicDetailViewHolder(view)
+                    var holder =EatHolder(view)
+                    holders.add(holder)
+                    return holder
                 }
-                2 ->{
-                    view = inflater.inflate(R.layout.view_tool_play_detail,parent,false)
-                    return ToolBasicDetailViewHolder(view)
-            }
                 else -> return null
             }
         else return null
@@ -141,5 +167,31 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
         init{
 
         }
+    }
+
+    fun doSave() {
+        var items:MutableList<BaseCardItem> = mutableListOf()
+        var name:String =""
+        for(holder in holders){
+
+            if(holder is EatHolder){
+                var hd :EatHolder = holder as EatHolder
+                items.add(hd.item)
+            }
+
+            if(holder is TargetHolder){
+                var hd :TargetHolder = holder as TargetHolder
+                items.add(hd.item)
+                name = hd.item.target
+            }
+        }
+
+        var card:Card
+        Realm.getDefaultInstance().executeTransaction(Realm.Transaction {
+            card = it.createObject(Card::class.java)
+            card.cardName = name
+            card.content = Gson().toJson(items)
+
+        })
     }
 }

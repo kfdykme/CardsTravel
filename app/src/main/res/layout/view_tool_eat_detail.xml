@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="@string/Eating"
+        android:padding="8dp"
+        android:textSize="27sp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.6dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@color/colorPrimary"/>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="eat"/>
-        </android.support.design.widget.TextInputLayout>
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="8dp">
 
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:cardBackgroundColor="@color/colorPrimary">
+        <TextView
+            android:id="@+id/btAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/newItem"
+            android:padding="8dp"
+            android:textSize="20sp"
+            android:textColor="@color/colorAccent"/>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

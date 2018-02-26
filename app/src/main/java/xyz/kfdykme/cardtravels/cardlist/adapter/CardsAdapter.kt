@@ -2,22 +2,20 @@ package xyz.kfdykme.cardtravels.page.cards.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
-import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 
 import kotlinx.android.synthetic.main.view_card.view.*
 import xyz.kfdykme.cardtravels.R
+import xyz.kfdykme.cardtravels.data.Card
 
 /**
  * Created by kf on 18-1-21.
  */
-class CardsAdapter(val context : Context, val items : ArrayList<String>,val type :Int) : RecyclerView.Adapter<CardsAdapter.CardsViewHolder>(){
+class CardsAdapter(val context : Context, val items : MutableList<Card>,val type :Int) : RecyclerView.Adapter<CardsAdapter.CardsViewHolder>(){
 
 
 
@@ -35,7 +33,7 @@ class CardsAdapter(val context : Context, val items : ArrayList<String>,val type
     override fun onBindViewHolder(holder: CardsViewHolder?, position: Int) {
 
 
-       holder?.bind(items.get(position),type)
+       holder?.bind(items.get(position).cardName,type)
 
        holder?.itemView?.cardv?.setOnClickListener(object : View.OnClickListener{
             override fun onClick(view: View?) {

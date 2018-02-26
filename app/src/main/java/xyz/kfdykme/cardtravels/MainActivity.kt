@@ -1,4 +1,4 @@
-package xyz.kfdykme.cardtravels.page.cards
+package xyz.kfdykme.cardtravels
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,13 +7,14 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import io.realm.Realm
+import io.realm.RealmObject
 
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import xyz.kfdykme.cardtravels.R
-import xyz.kfdykme.cardtravels.page.cardedit.CardEditActivity
+import xyz.kfdykme.cardtravels.card.CardEditActivity
+import xyz.kfdykme.cardtravels.data.Card
 import xyz.kfdykme.cardtravels.page.cards.adapter.CardsAdapter
-import xyz.kfdykme.cardtravels.page.travel.TravelActivity
+import xyz.kfdykme.cardtravels.travel.TravelActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,11 +22,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+
 
         //test data
-        val items = ArrayList<String>(listOf("ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","GuangZhou") )
-
+       // val items = ArrayList<String>(listOf("ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","ChengDu","BeiJing","GuangZhou") )
+        val items = Realm.getDefaultInstance().where(Card::class.java).findAll()
         //init recyclerview
         rv.adapter = CardsAdapter(this,items,0)
         rv.layoutManager = GridLayoutManager(this,2)
@@ -35,14 +36,14 @@ class MainActivity : AppCompatActivity() {
         btTravel.setOnClickListener(object : View.OnClickListener{
             override fun onClick(view: View?) {
                 val intent = Intent()
-                intent.setClass(this@MainActivity,TravelActivity::class.java)
+                intent.setClass(this@MainActivity, TravelActivity::class.java)
                 startActivity(intent)
             }
         })
         btCard.setOnClickListener(object:View.OnClickListener{
             override fun onClick(p0: View?) {
 
-                startActivity(Intent(this@MainActivity,CardEditActivity::class.java))
+                startActivity(Intent(this@MainActivity, CardEditActivity::class.java))
             }
         })
     }

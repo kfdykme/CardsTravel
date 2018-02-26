@@ -3,6 +3,7 @@
     package="xyz.kfdykme.cardtravels">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".page.cards.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -20,11 +21,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".page.travel.TravelActivity"
+            android:name=".travel.TravelActivity"
             android:label="@string/title_activity_travel"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".page.cardedit.CardEditActivity"
+            android:name=".card.CardEditActivity"
             android:label="@string/title_activity_card_edit"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

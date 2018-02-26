@@ -1,21 +1,18 @@
-package xyz.kfdykme.cardtravels.page.cardedit
+package xyz.kfdykme.cardtravels.card
 
 import android.content.Context
-import android.graphics.Color
+import android.content.DialogInterface
 import android.graphics.PixelFormat
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import android.widget.Toast
 import xyz.kfdykme.cardtravels.R
 
-import kotlinx.android.synthetic.main.activity_card_edit.*
 import kotlinx.android.synthetic.main.content_card_edit.*
 import kotlinx.android.synthetic.main.view_card_detail.*
 import android.view.Gravity
-import kotlinx.android.synthetic.main.view_tool_basic_detail.view.*
-import java.text.FieldPosition
 
 
 class CardEditActivity : AppCompatActivity() {
@@ -36,9 +33,10 @@ class CardEditActivity : AppCompatActivity() {
     var touchListener:View.OnTouchListener? = null
 
     var details:ArrayList<String> = ArrayList<String>(listOf("Target"))
-    var detailAdapter = ToolAdapter(this,details,1)
+    var detailAdapter = ToolAdapter(this, details, 1)
 
     var tool:String? = null
+
     fun initTouch(){
         touchListener = object:View.OnTouchListener{
             var lX:Int = baseX!!
@@ -92,7 +90,6 @@ class CardEditActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_card_edit)
-        setSupportActionBar(toolbar)
 
         wmlp = WindowManager.LayoutParams()
         wm = application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -100,14 +97,14 @@ class CardEditActivity : AppCompatActivity() {
 
 
         
-        var tools:ArrayList<String> = ArrayList<String>(listOf("Target","Eat","Play"))
-        var adapter = ToolAdapter(this,tools,0)
+        var tools:ArrayList<String> = ArrayList<String>(listOf("Target","Eat"))
+        var adapter = ToolAdapter(this, tools, 0)
 
 
         rvTools.adapter = adapter
         rvTools.layoutManager = LinearLayoutManager(this)
 
-        adapter.setOnItemClickListener(object:ToolAdapter.OnItemClickListener{
+        adapter.setOnItemClickListener(object: ToolAdapter.OnItemClickListener {
 
             override fun onTouch(view: View?, motionEvent: MotionEvent?): Boolean {
                 when(motionEvent?.action){
@@ -138,7 +135,6 @@ class CardEditActivity : AppCompatActivity() {
                 when(tool){
                     "Target"-> v = inflater?.inflate(R.layout.view_tool_basic_detail,null)
                     "Eat"-> v = inflater?.inflate(R.layout.view_tool_eat_detail,null)
-                    "Play"->v = inflater?.inflate(R.layout.view_tool_play_detail,null)
                     else ->v = inflater?.inflate(R.layout.view_tool_basic_detail,null)
                 }
                 val w:Int = (view!!.width * 2).toInt()
@@ -155,7 +151,6 @@ class CardEditActivity : AppCompatActivity() {
                 wmlp?.y = baseY!!-h/2
 
                 v?.setOnTouchListener(touchListener)
-                v?.et?.setOnTouchListener(touchListener)
                 wm?.addView(v,wmlp)
 
                 v?.measure(View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED)
@@ -171,6 +166,31 @@ class CardEditActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+                .setMessage(getString(R.string.askSaveCardEdit))
+                .setNegativeButton("No",object:DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+
+                        finish()
+                    }
+                })
+                .setPositiveButton("Yes",object :DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+
+                        doSave()
+                    }
+                })
+                .create().show()
+
+
+    }
+
+    private fun doSave() {
+
+        detailAdapter.doSave()
+        finish()
+    }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
 
@@ -183,4 +203,6 @@ class CardEditActivity : AppCompatActivity() {
         }
         return false
     }
+
+
 }
