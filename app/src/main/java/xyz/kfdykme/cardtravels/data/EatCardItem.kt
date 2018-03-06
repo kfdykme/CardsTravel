@@ -6,7 +6,9 @@ package xyz.kfdykme.cardtravels.data
 
 public class EatCardItem : BaseCardItem(){
 
-
+    object name{
+        var NAME = "EatCardItem"
+    }
 
     var list:MutableList<Item> = mutableListOf()
 
@@ -15,7 +17,7 @@ public class EatCardItem : BaseCardItem(){
 
     }
 
-    public class Item(val c:String){
+    public class Item(c:String){
 
         var content:String = ""
         init {

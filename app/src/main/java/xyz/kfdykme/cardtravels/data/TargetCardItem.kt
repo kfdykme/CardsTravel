@@ -5,6 +5,9 @@ package xyz.kfdykme.cardtravels.data
  */
 public class TargetCardItem : BaseCardItem() {
     var target:String =""
+    object name{
+        var NAME = "TargetCardItem"
+    }
     init {
         itemName = "TargetCardItem"
     }

@@ -44,6 +44,11 @@ class CardsAdapter(val context : Context, val items : MutableList<Card>,val type
             }
         })
 
+        holder?.itemView?.cardv?.setBackgroundColor(items[position].primaryColor)
+        holder?.itemView?.cardLine1?.setBackgroundColor(items[position].primaryColor)
+        holder?.itemView?.cardLine2?.setBackgroundColor(items[position].primaryColor)
+        holder?.itemView?.cardLine3?.setBackgroundColor(items[position].primaryColor)
+
 
     }
 

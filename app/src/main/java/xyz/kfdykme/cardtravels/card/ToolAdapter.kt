@@ -1,7 +1,9 @@
 package xyz.kfdykme.cardtravels.card
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -13,15 +15,15 @@ import io.realm.Realm
 import xyz.kfdykme.cardtravels.R
 
 import kotlinx.android.synthetic.main.view_tool_basic.view.*
+import kotlinx.android.synthetic.main.view_tool_basic_detail.view.*
 import xyz.kfdykme.cardtravels.card.holder.EatHolder
 import xyz.kfdykme.cardtravels.card.holder.TargetHolder
-import xyz.kfdykme.cardtravels.data.BaseCardItem
-import xyz.kfdykme.cardtravels.data.Card
+import xyz.kfdykme.cardtravels.data.*
 
 /**
  * Created by kf on 18-1-21.
  */
-class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
+class ToolAdapter(val context :Context,var items:MutableList<String>,val type :Int)
     : RecyclerView.Adapter<ToolAdapter.ToolBaseViewHolder?>() {
 
     val TOOL_PLACE:Int = 0
@@ -33,6 +35,9 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
     val TOOL_PLAY:Int = 3
 
     var holders:MutableList<ToolBaseViewHolder> = mutableListOf()
+
+    var card:Card? = null
+    var cardItem:CardItem? = null
 
     interface OnItemClickListener{
         fun onClick(view: View?)
@@ -70,22 +75,25 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
 
 
 
-            1 ->{
-                when(getItemViewType(position)){
-                    0 -> {
-                        (holder as TargetHolder).itemView.setOnClickListener(object :View.OnClickListener{
-                            override fun onClick(p0: View?) {
+            1 -> when(getItemViewType(position)){
+                0 -> {
+                    (holder as TargetHolder).itemView.setOnClickListener(object :View.OnClickListener{
+                        override fun onClick(p0: View?) {
 
-                                Toast.makeText(context,(holder as TargetHolder).item.target,Toast.LENGTH_LONG).show()
-                            }
-                        })
-                    }
-                    1 ->{
-
-                    }
-                    else -> (holder as ToolBasicDetailViewHolder)?.bind(items.get(position))
+                            Toast.makeText(context,(holder as TargetHolder).item.target,Toast.LENGTH_LONG).show()
+                        }
+                    })
+                    var hd = holder as TargetHolder
+                    hd.itemView.et.setText(cardItem?.target)
                 }
-
+                1 ->{
+                    var hd = holder as EatHolder
+                    if(cardItem?.eats != null)
+                    for(s in cardItem?.eats!!){
+                        hd.addItem(s.content)
+                    }
+                }
+                else -> (holder as ToolBasicDetailViewHolder)?.bind(items.get(position))
             }
         }
     }
@@ -133,8 +141,8 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
 
     override fun getItemViewType(position: Int): Int {
         when(items.get(position)){
-            "Target"-> return 0
-            "Eat"-> return 1
+            TargetHolder.TAG-> return 0
+            EatHolder.TAG-> return 1
             "Play"->return 2
             else ->return 4
         }
@@ -169,29 +177,60 @@ class ToolAdapter(val context :Context,var items:List<String>,val type :Int)
         }
     }
 
+    fun doLoad(card:Card){
+        this.card = card
+        var data = Gson().fromJson<CardItem>(card.content, CardItem::class.java)
+
+        this.cardItem = data
+        for(tag in data.toolList){
+            items.add(tag)
+        }
+        notifyDataSetChanged()
+    }
+
     fun doSave() {
-        var items:MutableList<BaseCardItem> = mutableListOf()
+
         var name:String =""
-        for(holder in holders){
-
+        var cardItem:CardItem = CardItem()
+        for (holder in holders){
             if(holder is EatHolder){
-                var hd :EatHolder = holder as EatHolder
-                items.add(hd.item)
+                cardItem.toolList.add(EatHolder.TAG)
+                var hd = holder as EatHolder
+                for(i in hd.item.list){
+                    cardItem.eats.add(CardItem.EatItem(i.content))
+                }
+            }
+            if(holder is TargetHolder){
+                cardItem.toolList.add(TargetHolder.TAG)
+                var hd = holder as TargetHolder
+                cardItem.target = hd.item.target
+                name=cardItem.target
             }
 
-            if(holder is TargetHolder){
-                var hd :TargetHolder = holder as TargetHolder
-                items.add(hd.item)
-                name = hd.item.target
-            }
         }
 
-        var card:Card
+
+
         Realm.getDefaultInstance().executeTransaction(Realm.Transaction {
-            card = it.createObject(Card::class.java)
-            card.cardName = name
-            card.content = Gson().toJson(items)
+            if(this.card == null){
+
+                card = it.createObject(Card::class.java,System.currentTimeMillis())
+                card!!.cardName = name
+                card!!.content = Gson().toJson(cardItem)
+                card!!.primaryColor =Color.rgb(getRandom(),getRandom(),getRandom())
+
+            }
+            else{
+
+                card!!.cardName = name
+                card!!.content = Gson().toJson(cardItem)
+                it.copyToRealmOrUpdate(card)
+            }
 
         })
+    }
+
+    fun getRandom():Int{
+        return (100+ (Math.random() *150)).toInt()
     }
 }

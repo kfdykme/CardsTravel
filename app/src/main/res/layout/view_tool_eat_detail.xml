@@ -34,6 +34,6 @@
             android:text="@string/newItem"
             android:padding="8dp"
             android:textSize="20sp"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="@color/colorWhite"/>
     </android.support.v7.widget.CardView>
 </LinearLayout>

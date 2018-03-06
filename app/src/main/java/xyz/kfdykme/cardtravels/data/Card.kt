@@ -1,15 +1,18 @@
 package xyz.kfdykme.cardtravels.data
 
-
-import io.realm.RealmList
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 /**
- * Created by wimkf on 2018/2/22.
+ * Created by wimkf on 2018/3/5.
  */
 open class Card:RealmObject(){
-    var cardId:String = ""
+    @PrimaryKey
+    var cardId:Long = 0
+    
+    var cardName:String = ""
+    
     var content:String = ""
-    var cardName:String =""
 
+    var primaryColor:Int = 0
 }

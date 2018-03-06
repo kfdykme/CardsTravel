@@ -2,6 +2,8 @@ package xyz.kfdykme.cardtravels
 
 import android.app.Application
 import android.util.Log
+import com.tencent.bugly.Bugly
+import com.tencent.bugly.crashreport.CrashReport
 import io.realm.*
 
 /**
@@ -10,6 +12,8 @@ import io.realm.*
 public class App : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        Bugly.init(getApplicationContext(), "a768847f42", false);
         Realm.init(this)
 
         var configuration:RealmConfiguration  = RealmConfiguration

@@ -1,29 +1,34 @@
 package xyz.kfdykme.cardtravels.card
 
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.PixelFormat
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.*
-import xyz.kfdykme.cardtravels.R
-
-import kotlinx.android.synthetic.main.content_card_edit.*
 import kotlinx.android.synthetic.main.view_card_detail.*
-import android.view.Gravity
+
+import xyz.kfdykme.cardtravels.R
+import xyz.kfdykme.cardtravels.data.Card
 
 
-class CardEditActivity : AppCompatActivity() {
+/**
+ * Created by wimkf on 2018/3/3.
+ */
+class CardView:Fragment, CardContract.View{
+
+    private lateinit var mPresenter:CardContract.Presenter
+
+    var card: Card? = null
 
     val NORMAL_TOUCH_STATUS = 1
     val ALERT_TOUCH_STATUS = 2
     var touchStatus:Int = NORMAL_TOUCH_STATUS
 
-
-    var wmlp:WindowManager.LayoutParams? = null
-    var wm:WindowManager? = null//application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    var wmlp: WindowManager.LayoutParams? = null
+    var wm: WindowManager? = null//application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     var inflater:LayoutInflater? = null//LayoutInflater.from(this@CardEditActivity)
     var v:View? = null//inflater.inflate(R.layout.view_tool_basic_detail,null)
 
@@ -32,8 +37,8 @@ class CardEditActivity : AppCompatActivity() {
 
     var touchListener:View.OnTouchListener? = null
 
-    var details:ArrayList<String> = ArrayList<String>(listOf("Target"))
-    var detailAdapter = ToolAdapter(this, details, 1)
+    lateinit var details:ArrayList<String>
+    lateinit var detailAdapter :ToolAdapter
 
     var tool:String? = null
 
@@ -87,22 +92,42 @@ class CardEditActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_card_edit)
+    constructor(){
+
+    }
+
+    fun doSave() {
+
+        detailAdapter.doSave()
+    }
+
+
+    fun load(card:Card?){
+        if(card==null) return
+        Log.i("CardView",card.content)
+
+        detailAdapter.doLoad(card!!)
+    }
+
+    override fun onCreateView(inflate: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        var root:View = inflate?.inflate(R.layout.activity_card_edit,container,false)!!
+
+
+        details = ArrayList<String>()
+        detailAdapter = ToolAdapter(context!!, details, 1)
 
         wmlp = WindowManager.LayoutParams()
-        wm = application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        inflater = LayoutInflater.from(this@CardEditActivity)
+        wm = context!!.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        inflater = LayoutInflater.from(context)
 
 
-        
         var tools:ArrayList<String> = ArrayList<String>(listOf("Target","Eat"))
-        var adapter = ToolAdapter(this, tools, 0)
+        var adapter = ToolAdapter(context!!, tools, 0)
 
 
+        var rvTools = root.findViewById<RecyclerView>(R.id.rvTools)
         rvTools.adapter = adapter
-        rvTools.layoutManager = LinearLayoutManager(this)
+        rvTools.layoutManager = LinearLayoutManager(context)
 
         adapter.setOnItemClickListener(object: ToolAdapter.OnItemClickListener {
 
@@ -161,48 +186,28 @@ class CardEditActivity : AppCompatActivity() {
             }
         })
 
+        var rvCardDetail = root.findViewById<RecyclerView>(R.id.rvCardDetail)
         rvCardDetail.adapter = detailAdapter
-        rvCardDetail.layoutManager = LinearLayoutManager(this)
+        rvCardDetail.layoutManager = LinearLayoutManager(context)
 
+
+        load(card)
+        return root
     }
 
-    override fun onBackPressed() {
-        AlertDialog.Builder(this)
-                .setMessage(getString(R.string.askSaveCardEdit))
-                .setNegativeButton("No",object:DialogInterface.OnClickListener{
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-
-                        finish()
-                    }
-                })
-                .setPositiveButton("Yes",object :DialogInterface.OnClickListener{
-                    override fun onClick(dialog: DialogInterface?, which: Int) {
-
-                        doSave()
-                    }
-                })
-                .create().show()
-
-
+    override fun setPresenter(presenter: CardContract.Presenter) {
+        mPresenter = presenter
     }
 
-    private fun doSave() {
-
-        detailAdapter.doSave()
-        finish()
+    override fun onResume() {
+        super.onResume()
+//        mPresenter.start()
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
 
-        when(touchStatus){
-            NORMAL_TOUCH_STATUS->return super.dispatchTouchEvent(ev)
-            ALERT_TOUCH_STATUS->{
-                touchListener?.onTouch(v,ev)
-                return false
-            }
+    companion object {
+        fun newInstance():CardView{
+            return CardView()
         }
-        return false
     }
-
-
 }
